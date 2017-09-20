@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Timer</title>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- jquery -->
+    <script src="http://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="wrapper" style="width:500px;margin:50px auto;border: 1px solid #333;border-radius: 6px;text-align: center;">
+        <div class="btn-group" role="group" style="margin-top: 20px;">
+            <button type="button" class="btn btn-default" id="_play">播放</button>
+            <button type="button" class="btn btn-default" id="_pause">暂停</button>
+            <button type="button" class="btn btn-default" id="_fr">快退</button>
+            <button type="button" class="btn btn-default" id="_ff">快进</button>
+        </div>
+        <hr>
+        <div id="timeZone" style="min-height: 200px;line-height:200px;font-size: 24px;font-weight: bold;font-family: "微软雅黑", "Helvetica Neue", Helvetica, Arial, sans-serif"></div>
+        <p style="margin-top: 30px;">当前状态： <span id="statusText"></span></p>
+        <p class="text-info text-center" style="border-top: 1px solid #ccc;background: #fdfdfd;vertical-align: middle;padding-top: 10px;">说明:初始值为500, 最大计数1000, 最小计数0</p>
+    </div>
+</body>
+<script type="text/javascript">
+    var speedArr = [1, 2, 4, 8, 16];
+    var currentSpeedIndex = 0;
+    var initInterval = 1000;    //初始化为5秒一次
+    var intervalTime = initInterval;
+    var count = 500;
+    var maxCount = 1000;
+    var minCount = 0;
+    var flag = true;
+
+    function unableBtn(ids){
+        $('.btn').attr('disabled', false);
+        if(typeof ids == 'string'){
+            $('#' + ids).attr('disabled', true);
+        }
+        if(typeof ids == 'object'){
+            var i = 0 ;
+            for(; i<ids.length; i++) {
+                $('#' + ids[i]).attr('disabled', true);
+            }
+        }
+        if(typeof ids == 'undefined'){
+
+        }
+    }
+
+    function play(){
+        console.log(currentSpeedIndex);
+        if((flag && count < maxCount) || (!flag && count > minCount)){
+            count = flag ? count+1 : count -1;
+            timer = setTimeout(play, intervalTime);
+        }else{
+            clearTimeout(timer);
+            $('#statusText').html('<span class="text-danger">计数结束</span>');
+        }
+        $('#timeZone').html(count);
+    }
+
+    function _setInterval(index){
+        var str = '';
+        intervalTime = initInterval/speedArr[index];
+        if(index != 0){
+            str = (flag ? '快进' : '快退') + ' x ' + speedArr[index] + '倍速';
+        }else{
+            str = '播放';
+        }
+        $('#statusText').html(str);
+    }
+
+    unableBtn(['_ff', '_fr', '_pause']);
+    $('#timeZone').html(count);
+
+    //播放
+    $('#_play').on('click', function(){
+        currentSpeedIndex = 0;
+        flag = true;
+        _setInterval(currentSpeedIndex);
+        play();
+        unableBtn('_play');
+    });
+
+    //暂停
+    $('#_pause').on('click', function(){
+        $('#statusText').html('暂停');
+        clearTimeout(timer);
+        unableBtn(['_fr', '_ff']);
+    });
+
+    //快退
+    $('#_fr').on('click', function(){
+        $('#statusText').html('快退');
+        flag = false;
+        unableBtn(['_play', '_ff']);
+        currentSpeedIndex++;
+        currentSpeedIndex = currentSpeedIndex == speedArr.length ? 0 : currentSpeedIndex;
+        _setInterval(currentSpeedIndex);
+    });
+
+    //快进
+    $('#_ff').on('click', function(){
+        $('#statusText').html('快进');
+        flag = true;
+        unableBtn(['_play', '_fr']);
+        currentSpeedIndex++;
+        currentSpeedIndex = currentSpeedIndex == speedArr.length ? 0 : currentSpeedIndex;
+        _setInterval(currentSpeedIndex);
+    });
+</script>
+</html>
