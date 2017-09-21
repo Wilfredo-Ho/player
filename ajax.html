@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>AJAX请求https</title>
+	<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
+</head>
+<body>
+	<div id="msg"></div>
+</body>
+<script>
+	$(function(){
+		var data = JSON.stringify({
+			method: 'getToken',
+			para: {
+				manageLogin: 'admin1',
+				password: '123456'
+			}
+		});
+		$.post('https://139.196.86.35:8443/carshare/carshare/manage',{data:data}, function(res){
+			$('#msg').html(res);
+		})
+	});
+</script>
+</html>
