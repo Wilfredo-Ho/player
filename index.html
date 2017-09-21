@@ -69,6 +69,18 @@
         }
     }
 
+    function toThree(num){
+        var str = '';
+        if(num<10) {
+            str = '00' + num;
+        }else if(num<100){
+            str = '0' + num;
+        }else{
+            str = num;
+        }
+        return str;
+    }
+
     function play(){
         console.log(currentSpeedIndex);
         if((flag && count < maxCount) || (!flag && count > minCount)){
@@ -79,7 +91,7 @@
             unableBtn(['_fr', '_ff']);
             $('#statusText').html('<span class="text-danger">计数结束</span>');
         }
-        $('#timeZone').html(count);
+        $('#timeZone').html(toThree(count));
     }
 
     function _setInterval(index){
