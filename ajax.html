@@ -22,7 +22,7 @@
 		});
 		$.post('https://139.196.86.35:8443/carshare/carshare/manage',{data:data}, function(res){
 			if(res.status){
-				$('#username').html(res.userInfo.manageAllName);
+				$('#username').html(res.data.userInfo.manageAllName);
 			}else{
 				$('#username').html('请求失败');
 			}
